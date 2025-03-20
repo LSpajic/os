@@ -1,8 +1,14 @@
 #include "stack.h"
 #include <stdio.h>
 #include <stdbool.h>
-#include <limits.h>
 
+int Mylog2(int n)
+{
+    int r = 0;
+    while (n >>= 1)
+        r++;
+    return r;
+}
 void binprintf(int v)
 {
     unsigned int mask = 1 << ((sizeof(int) << 3) - 1);
@@ -51,7 +57,10 @@ int pop(Stack *stack)
         return -1;
     }
     int popped = stack->arr[stack->top--];
-    // printf("Popped %d\n", popped);
+    printf("Popped: ");
+    binprintf(popped);
+    printf(" ");
+    printf("reg[%d]\n", Mylog2(popped) + 1);
     return popped;
 }
 
@@ -70,12 +79,14 @@ int printStack(Stack *stack)
     printf("Stack contents: ");
     if (isEmpty(stack))
     {
-        // printf("Stack empty\n");
+        printf("\n");
         return -1;
     }
     for (int i = 0; i <= stack->top; i++)
     {
         binprintf(stack->arr[i]);
+        printf(" ");
+        printf("reg[%d]", Mylog2(stack->arr[i]) + 1);
         printf(";");
     }
     printf("\n");

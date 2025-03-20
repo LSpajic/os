@@ -13,6 +13,19 @@ void obradi_sigint(int sig);
 void odblokiraj(void);
 void emptyCounter(int signalPriority);
 int returnHighestPriority(int K_Z);
+void printall(void);
+
+void printall(void)
+{
+    printf("    54321      54321\n");
+    printf("KZ: ");
+
+    binprintf(K_Z);
+    printf(", TP: ");
+    binprintf(T_P);
+    printf("\n");
+    printStack(&stack);
+}
 
 int main()
 {
@@ -38,39 +51,40 @@ int main()
 void emptyCounter(int signalPriority)
 {
     odblokiraj();
+    printf("    54321      54321\n");
+    printf("KZ: ");
+
+    binprintf(K_Z);
+    printf(", TP: ");
+    binprintf(T_P);
+    printf("\n");
+    printStack(&stack);
+    printf("Pokrecem prekid razine %d\n", signalPriority);
     int counter = 0;
     int i = 0;
     while (i < 10)
     {
-        printf("Signal razine: %d, iteracija: %d\n", signalPriority, i);
+        printf("Prekid razine: %d, iteracija: %d\n", signalPriority, i);
         sleep(1);
         i++;
     }
     printf("Zavrsio signal razine: %d\n", signalPriority);
-    printf("54321\n");
     int H_P = 1 << (returnHighestPriority(K_Z) - 1);
     int a = peek(&stack);
     if (H_P > a)
     {
         T_P = H_P;
         K_Z &= ~H_P;
-        printf("K_Z: ");
-        binprintf(K_Z);
-        printf(", TP: ");
-        binprintf(T_P);
-        printf("\n");
+        printall();
 
         emptyCounter(returnHighestPriority(T_P));
     }
     else if (!isEmpty(&stack))
     {
+        printf("Skidam TP i registre sa stoga:\n");
         T_P = pop(&stack);
-        printf("K_Z: ");
-        binprintf(K_Z);
-        printf(", TP: ");
-        binprintf(T_P);
+        printall();
     }
-    printStack(&stack);
 }
 void odblokiraj(void)
 {
