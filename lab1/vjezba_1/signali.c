@@ -72,10 +72,9 @@ void emptyCounter(int signalPriority)
     int a = peek(&stack);
     if (H_P > a)
     {
-        printall();
-
         T_P = H_P;
         K_Z &= ~H_P;
+        printall();
 
         emptyCounter(returnHighestPriority(T_P));
     }
