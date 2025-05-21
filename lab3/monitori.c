@@ -32,6 +32,7 @@ void inicijaliziraj_monitor(int N) {
 void student_ulazi(int id) {
     pthread_mutex_lock(&zabava.monitor);
     
+    //Ako je partibrejker u sobi cekaj
     while (zabava.partibrejker_u_sobi) {
         pthread_cond_wait(&zabava.student_moze_uci, &zabava.monitor);
     }
@@ -52,6 +53,7 @@ void student_izlazi(int id) {
     zabava.broj_studenata_u_sobi--;
     printf("Student %d je izasao iz sobe (ukupno studenata: %d)\n", id, zabava.broj_studenata_u_sobi);
     
+    //ako je soba prazna partibrejker izlazi
     if (zabava.partibrejker_u_sobi && zabava.broj_studenata_u_sobi == 0) {
         pthread_cond_signal(&zabava.partibrejker_moze_izaci);
     }
@@ -62,6 +64,7 @@ void student_izlazi(int id) {
 void partibrejker_ulazi() {
     pthread_mutex_lock(&zabava.monitor);
     
+    //cekaj da udje bar 3 studenta
     while (zabava.broj_studenata_u_sobi < 3) {
         pthread_cond_wait(&zabava.partibrejker_moze_uci, &zabava.monitor);
     }
@@ -75,6 +78,7 @@ void partibrejker_ulazi() {
 void partibrejker_izlazi() {
     pthread_mutex_lock(&zabava.monitor);
     
+    //partibrejker ne moze izac ako u sobi ima studenata
     while (zabava.broj_studenata_u_sobi > 0) {
         pthread_cond_wait(&zabava.partibrejker_moze_izaci, &zabava.monitor);
     }
@@ -90,18 +94,18 @@ void partibrejker_izlazi() {
 void* student(void* arg) {
     int id = *((int*)arg);
     
-    int vrijeme_spavanja = (rand() % 401) + 100;
+    int vrijeme_spavanja = (rand() % 500) + 100;
     usleep(vrijeme_spavanja * 1000);
     
     for (int i = 0; i < 3; i++) {
         student_ulazi(id);
         
-        int vrijeme_zabave = (rand() % 1001) + 1000;
+        int vrijeme_zabave = (rand() % 100) + 1000;
         usleep(vrijeme_zabave * 1000);
         
         student_izlazi(id);
         
-        int vrijeme_odmora = (rand() % 1001) + 1000;
+        int vrijeme_odmora = (rand() % 100) + 1000;
         usleep(vrijeme_odmora * 1000);
     }
     
@@ -122,7 +126,7 @@ void* partibrejker(void* arg) {
             break;
         }
         
-        int vrijeme_spavanja = (rand() % 901) + 100;
+        int vrijeme_spavanja = (rand() % 1000) + 1000;
         usleep(vrijeme_spavanja * 1000);
         
         partibrejker_ulazi();
