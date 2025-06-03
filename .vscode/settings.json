@@ -3,6 +3,7 @@
         "utsname.h": "c",
         "wait.h": "c",
         "stdlib.h": "c",
-        "ioctl.h": "c"
+        "ioctl.h": "c",
+        "mman.h": "c"
     }
 }
